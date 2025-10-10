@@ -35,12 +35,16 @@ def main():
         key = input('Enter key: ')
         fernet = Fernet(key)
         site = input('Enter site/service to get login info: ').lower()
-        encrypted_pswd = bytes(data[site], 'utf-8')
-        decrypted_pswd = fernet.decrypt(encrypted_pswd).decode()
-        if ' = ' in decrypted_pswd:
-            format_print(decrypted_pswd)
-        else:
-            format_print(decrypted_pswd, sep=' ')
+        try:
+            encrypted_pswd = bytes(data[site], 'utf-8')
+            decrypted_pswd = fernet.decrypt(encrypted_pswd).decode()
+            if ' = ' in decrypted_pswd:
+                format_print(decrypted_pswd)
+            else:
+                format_print(decrypted_pswd, sep=' ')
+        except KeyError:
+            print(f"Error: site/service '{site}' does not exist in the data.", file=sys.stderr)
+            sys.exit(1)
 
 if __name__ == '__main__':
     main()
